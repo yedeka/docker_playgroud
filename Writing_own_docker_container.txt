@@ -1,0 +1,15 @@
+Base image - Foundational images that provide complete functionality. Usually OS images are base images.
+Child image - Images that work as extension of the base image and add additional functionality.
+Official images - Built and maintained at docker. Usually one word images.
+user images - created by users and add exntesions to base images. Naming convention <user_id>/image_name.
+
+Command to run docker file to create an image 
+docker build -t yedeka/catnip .
+
+Steps for pushing image to docker hub in this case docker hub 
+1] Login to dockerhub 
+docker login (After this for the prompts use the same credentials being used for logging into online docker hub).
+
+2] docker push <Userid>/<Image_Name> i.e. docker push yedeka/catnip
+
+

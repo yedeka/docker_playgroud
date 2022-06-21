@@ -1,0 +1,92 @@
+Why do we need multi container environments
+-------------------------------------------
+1] Major advantage of docker is the isolation provided for application components.
+2] Each process is bundled with it's dependencies in a sandbox called container and is run independently.
+3] Keep containers for each service separate.
+
+Article to read about relevance of containers for microservices
+https://medium.com/aws-activate-startup-blog/using-containers-to-build-a-microservices-architecture-6e1b8bacb7d1#.xl3wryr5z
+
+Sample Food truck app
+---------------------
+It has 2 parts
+1] A back-end flask server responding to requests.
+2] An elastic search service that allows for geolocation search.
+
+The de facto idea is to split the app in 2 containers
+1] Flask container.
+2] Elastic Search container.
+
+This can be done to scale the components independently depending upon the load on the application.
+
+Application setup commands
+1] Steps to download the food truck application -
+git clone https://github.com/prakhar1989/FoodTrucks
+cd FoodTrucks
+
+2] Pull elastic search image  - docker pull docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+
+3] Run in development mode in a single cluster elastic search mode by passing an environment variable
+docker run -d --name es -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+
+Checking logs - docker container logs <container_name> i.e. docker container logs es
+Sending a debugging request to check elastic search has been initialized or not
+curl localhost:9200
+
+4] Build the container based on docker file. This command will be run in the FoodTrucks directory where docker file resides.
+docker build -t yedeka/foodtrucks-web .
+
+5] Running the flask app
+docker run -P --rm yedeka/foodtrucks-web
+This will error out since the flask app container can not communicate with the elastic search container which is spun up and running.
+
+6] use the command docker container ls to list down all the container that are running
+This will give the elastic search container as follows
+
+C:\Yogesh\Job_Hunt\Tools\Docker\docker_playgroud\FoodTrucks>docker container ls
+CONTAINER ID   IMAGE                                                 COMMAND                  CREATED          STATUS          PORTS                                            NAMES
+bd876e1f4860   docker.elastic.co/elasticsearch/elasticsearch:6.3.2   "/usr/local/bin/dock…"   36 minutes ago   Up 36 minutes   0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp   es
+
+7] Command to give the list of networks
+docker network ls
+
+This gives 3 types of networks given by docker. Containers are run by default in the bridge network.
+This means when es container was run it was run on the bridge network.
+
+8] Command to inspect the newwork
+docker network inspect bridge
+this gives the ip address given to the container by docker -
+
+"Containers": {
+            "bd876e1f486012fb14c6d7e4d5da3c843c312e09dd2ae039dc90232687110b6a": {
+                "Name": "es",
+                "EndpointID": "bc31b1a1f14cbe192dbd50c38485c197ae9c9c0b8caa90884b64ec664c19e1f6",
+                "MacAddress": "02:42:ac:11:00:02",
+                "IPv4Address": "172.17.0.2/16",
+                "IPv6Address": ""
+            }
+        },
+172.17.0.2
+
+9] we can test whether the flask container can connect to this ip address as follows
+docker run -it --rm yedeka/foodtrucks-web bash
+on the terminal give curl 172.17.0.2:9200
+
+10] However since the bridge network is a common network it is not your own network for the food truck app and hence is not secure. Docker allows us to overcome this by allowing us
+to create our own network as follows
+docker network create foodtrucks-net
+
+This creates a software bridge. Using software bridge the containers connected to the bridge can communicate with each other.
+The containers that are connected to different bridges can not communicate with each other. Docker takes care of this by adding specific rules in the host machine.
+
+To run a specific container on the given network we use the --net flag with docker command
+
+11] To run the es container on the foodtrucks-net network we can give command as follows
+docker run -d --name es --net foodtrucks-net -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+
+12] Now we can run the foodtrucks app in the same foodtrucks-net network so that it can communicate with the elastic search container.
+
+13] On user defined network containers can not onlt resolve I/P addresses but can also resolve the name to the I/P address. This is called automatic service discovery
+and it is provided by docker out of the box.
+Run the foodtrucks app on the foodtrucks-net network
+docker run -d --net foodtrucks-net -p 5000:5000 --name foodtrucks-web yedeka/foodtrucks-web

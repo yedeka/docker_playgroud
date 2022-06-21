@@ -1,0 +1,29 @@
+1. Run docker hello world
+  docker run hello-world
+2. Running busy box
+pull busy box on the system - docker pull busybox
+3. Command to see all images pulled on the system.
+docker iamges
+4. Run busybox
+docker run busybox echo "hello from busybox to Yogesh"
+5. List all running containers
+docker ps
+6. List all the containers that ran
+docker ps -a
+7. Running a container with interactiv tty
+docker run -it busybox sh
+Note - Even if we run rm -rf bin in the container simply typing exit and restarting the container will give us the original back.
+8. To not have the disk space blocked simply use docker rm command to clean up the container after they are done.
+Use the container ids to delete them.
+Step1 - Execute docker ps -a to find out all the conatiners that ran.
+Step2 - Execute docker rm <Space separated list of all the exited container ids from above command>.
+
+in case of successful container deletion we get the container ids echoed back.
+
+Instead of following 2 steps we can also do
+docker rm $(docker ps -a -q -f status=exited)
+q returns only numeric IDs
+and f formats the output
+9. Command simillar to rm
+docker container prune
+docker rmi

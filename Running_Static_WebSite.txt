@@ -1,0 +1,23 @@
+1. Open run and remove the image after it has been exited.
+docker run --rm prakhar1989/static-site
+This does nothing but echoes the output and does not reveal any information.
+
+2. If we run docker in detached mode so that the terminal can be closed without closing the container
+We use following switches for this
+docker run -d -P --name static-site prakhar1989/static-site
+
+-d - tell docker to run in a detached window.
+-P publish the open ports to random ports
+--name gives the name to the newly opened container
+
+3. use docker port static_site to display the ports of the static site container. The combined output of both the commands is as below.
+
+PS C:\Users\yoges> docker run -d -P --name static_site prakhar1989/static-site
+eb02159348990edff05c98f78e3ee53991a618ab54fa35bd0b35a458353af0ef
+PS C:\Users\yoges> docker port static_site
+443/tcp -> 0.0.0.0:49153
+80/tcp -> 0.0.0.0:49154
+
+run http://localhost:49154/
+
+4. docker stop static_site <container_name> to stop the detached container and still keep the docker instance alive. 
