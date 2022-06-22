@@ -1,0 +1,29 @@
+Docker Desktop [https://docs.docker.com/desktop/] - Used to create docker hosts on laptops, cloud providers and data centers.
+Docker Compose [https://docs.docker.com/compose/] - Tool for defining and running multi-container docker applications.
+Docker Swarm [https://docs.docker.com/engine/swarm/] - Tool for cluster management using docker.
+Kubernetes [https://kubernetes.io/] - Tool for automating deployment, scaling, and management of containerized applications (Container applications).
+
+What is Docker compose - Docker compose is a tool used for defining and running multi-container Docker apps in an easy way.
+
+1] It provides a configuration file called docker-compose.yml that is used to bring up the application and the suit of services it depends upon with just a single command.
+2] compose works in all environments including CI workflows but it is useful for development and testing environments.
+3] Docker compose comes pre-built with Windows and Mac but needs to be installed separately for linux
+4] Command to test docker compose is docker-compose --version
+
+More documentation for reference of compose file - https://docs.docker.com/compose/compose-file/
+
+We add volumes information in the compose file to ensure that the data stored between container restarts is persisted.
+
+5] Use docker-compose up for running the docker compose.
+
+6] To destroy the data volumes and  cluster following command is used
+docker-compose down -v
+
+7] docker-compose also creates a default network and puts all the containers on the same network so that they can talk to each other.
+
+8] docke-compose allows us to run the app in development mode
+This can be done easily by replacing the image property with build so that the files will be handled locally.
+
+Use cases of docker compose
+---------------------------
+https://docs.docker.com/compose/
