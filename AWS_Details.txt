@@ -1,0 +1,9 @@
+Account ID - 003236449186 (Root User)
+Alias - yogeshedekar2606
+Console Sign In URL - https://yogeshedekar2606.signin.aws.amazon.com/console
+
+iam admin user - iamadmin
+Password - Yogi#2606
+Access key ID - AKIAQBQHIJORC5G45N7M
+Secre Access Key - SvAlpoGF0qO4/a120NuNp+Nga0145ZtCzOyvMCQY
+Management Console sign-in - https://yogeshedekar2606.signin.aws.amazon.com/console
